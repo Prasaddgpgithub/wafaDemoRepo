@@ -22,7 +22,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "DS_OutputData",
+						"referenceName": "Ds_DEP10",
 						"type": "DatasetReference"
 					},
 					"name": "OutputData"
@@ -63,8 +63,8 @@
 				"joinEmpDataDepData sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
-				"          Column_1 as string,",
-				"          Column_2 as string",
+				"          Dep as string,",
+				"          DepName as string",
 				"     ),",
 				"     partitionFileNames:['empanddepData'],",
 				"     skipDuplicateMapInputs: true,",
