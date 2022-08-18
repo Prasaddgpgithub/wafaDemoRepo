@@ -70,8 +70,6 @@
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
 				"     mapColumn(",
-				"          empId = {EmployeeData100@empId},",
-				"          Empname = {EmployeeData100@name},",
 				"          {modify Country} = Country,",
 				"          depname",
 				"     ),",
