@@ -70,8 +70,8 @@
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
 				"     mapColumn(",
-				"          {modify Country} = Country,",
-				"          depname",
+				"          Column_1 = Country,",
+				"          Column_2 = depname",
 				"     ),",
 				"     partitionBy('hash', 1)) ~> OutputData"
 			]
