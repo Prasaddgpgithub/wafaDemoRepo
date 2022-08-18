@@ -3,32 +3,21 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Data flow1",
-				"type": "ExecuteDataFlow",
+				"name": "Execute Pipeline1",
+				"type": "ExecutePipeline",
 				"dependsOn": [],
-				"policy": {
-					"timeout": "1.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
 				"userProperties": [],
 				"typeProperties": {
-					"dataflow": {
-						"referenceName": "EmpDepDataFlow",
-						"type": "DataFlowReference"
+					"pipeline": {
+						"referenceName": "pipeline1",
+						"type": "PipelineReference"
 					},
-					"compute": {
-						"coreCount": 8,
-						"computeType": "General"
-					},
-					"traceLevel": "Fine"
+					"waitOnCompletion": true
 				}
 			}
 		],
 		"annotations": [],
-		"lastPublishTime": "2022-08-08T14:39:23Z"
+		"lastPublishTime": "2022-07-31T10:10:45Z"
 	},
 	"type": "Microsoft.DataFactory/factories/pipelines"
 }

@@ -1,0 +1,9 @@
+{
+	"name": "ADFDemoGoutham",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "d2e96d1d-bb16-45ef-9c4b-0d14ed610b63",
+		"tenantId": "99fdd034-0054-4c49-9364-85db75b32089"
+	}
+}
