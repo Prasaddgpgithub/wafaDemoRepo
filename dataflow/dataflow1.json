@@ -1,0 +1,71 @@
+{
+	"name": "dataflow1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_EMP10",
+						"type": "DatasetReference"
+					},
+					"name": "EMPData"
+				},
+				{
+					"dataset": {
+						"referenceName": "Ds_DEP10",
+						"type": "DatasetReference"
+					},
+					"name": "DepData"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_Output10",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "join1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          EmpID as string,",
+				"          Name as string,",
+				"          Country as string,",
+				"          Dep as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> EMPData",
+				"source(output(",
+				"          Dep as string,",
+				"          DepName as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> DepData",
+				"EMPData, DepData join(EmpID == DepData@Dep,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"join1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     mapColumn(",
+				"          EmpID,",
+				"          Name,",
+				"          Country,",
+				"          DepName",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}

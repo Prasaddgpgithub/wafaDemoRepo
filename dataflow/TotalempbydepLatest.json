@@ -1,0 +1,76 @@
+{
+	"name": "TotalempbydepLatest",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "EmpDatadataset101",
+						"type": "DatasetReference"
+					},
+					"name": "Employees"
+				},
+				{
+					"dataset": {
+						"referenceName": "depDataDataset100",
+						"type": "DatasetReference"
+					},
+					"name": "Departments"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "OutputDataset",
+						"type": "DatasetReference"
+					},
+					"name": "Totalempbydep"
+				}
+			],
+			"transformations": [
+				{
+					"name": "Aggregateempbydep"
+				},
+				{
+					"name": "join1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Empid as string,",
+				"          Name as string,",
+				"          Country as string,",
+				"          Department as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> Employees",
+				"source(output(",
+				"          depid as string,",
+				"          depname as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> Departments",
+				"Employees aggregate(groupBy(Department),",
+				"     TotalEmployees = count(Empid)) ~> Aggregateempbydep",
+				"Aggregateempbydep, Departments join(Department == depid,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"join1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['TotalEmployeesBydepLatest.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     mapColumn(",
+				"          DepName = depname,",
+				"          {Total Employees} = TotalEmployees",
+				"     ),",
+				"     partitionBy('hash', 1)) ~> Totalempbydep"
+			]
+		}
+	}
+}

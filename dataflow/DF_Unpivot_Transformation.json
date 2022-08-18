@@ -1,0 +1,56 @@
+{
+	"name": "DF_Unpivot_Transformation",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_PurchaseOrder",
+						"type": "DatasetReference"
+					},
+					"name": "PurchaseOrder"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "OutputDataset",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "unpivot1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          PO as string,",
+				"          Vendor as string,",
+				"          Mango as string,",
+				"          Apple as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> PurchaseOrder",
+				"PurchaseOrder unpivot(output(",
+				"          Fruit as string,",
+				"          Amount as string",
+				"     ),",
+				"     ungroupBy(PO,",
+				"          Vendor),",
+				"     lateral: true,",
+				"     ignoreNullPivots: false) ~> unpivot1",
+				"unpivot1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['PurchaseOrderUnpivot.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sink1"
+			]
+		}
+	}
+}

@@ -1,0 +1,49 @@
+{
+	"name": "FilterPayrollEmp",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "empDataDataset",
+						"type": "DatasetReference"
+					},
+					"name": "Employee"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "Outputdata100",
+						"type": "DatasetReference"
+					},
+					"name": "PayrollEmpData"
+				}
+			],
+			"transformations": [
+				{
+					"name": "FilterpayrollEmp"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          empId as string,",
+				"          name as string,",
+				"          Country as string,",
+				"          department as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> Employee",
+				"Employee filter(equals(department, '3')) ~> FilterpayrollEmp",
+				"FilterpayrollEmp sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['Outputpayrollempfilter'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> PayrollEmpData"
+			]
+		}
+	}
+}

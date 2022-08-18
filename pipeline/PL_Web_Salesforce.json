@@ -1,0 +1,112 @@
+{
+	"name": "PL_Web_Salesforce",
+	"properties": {
+		"activities": [
+			{
+				"name": "gettoken",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://wiprotechnologiesltd-2a-dev-ed.my.salesforce.com",
+					"method": "GET",
+					"headers": {
+						"content-type": "application/x-www-form-urlencoded"
+					},
+					"body": "username=dprasad91@salesforce.com&password=Dprasad@900841sqrxNFnL8kKTGoXAQ10dve&grant_type=password&client_id=3MVG9pRzvMkjMb6luJ_z3jqT74h.c4IkFKRJ_I5WgjmGi0N8y9e3Z7SZ6vrwzgZGObo17Lmki1lbBNO8GJKMI&client_secret=A2E674ACE3A71A18EBBECDB33BDB41A5F698C636F99C8B54BF13EAB1457BE825"
+				}
+			},
+			{
+				"name": "Sqlserver",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "gettoken",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "DS_Source_SQLDB",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Sqlserver",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('sqlserver').output.value",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Web2",
+							"type": "WebActivity",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"url": "https://wiprotechnologiesltd-2a-dev-ed.my.salesforce.com",
+								"method": "POST",
+								"headers": {
+									"Authorization": {
+										"value": "@{concat(activity('gettoken').output.token_type,' ',activity('gettoken').output.access_token)}",
+										"type": "Expression"
+									}
+								},
+								"body": {
+									"value": "@concat('{\"PathOnClient\":\"',item().mimetype,'\",','\"FileExtension\":\"',item().filetype,'\",','\"FileType\":\"',item().filetype,'\",','\"VersionData\":\"',item().ENCODE64_CONTENT,'\",','\"Title\":\"',item().name,'\"}')",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2022-08-10T11:31:53Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

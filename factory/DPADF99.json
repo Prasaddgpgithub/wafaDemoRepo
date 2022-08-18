@@ -1,0 +1,9 @@
+{
+	"name": "DPADF99",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "a1c49708-a8ac-478b-a987-eba3071a3e0c",
+		"tenantId": "99fdd034-0054-4c49-9364-85db75b32089"
+	}
+}

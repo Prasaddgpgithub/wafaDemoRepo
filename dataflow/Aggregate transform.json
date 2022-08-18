@@ -1,0 +1,54 @@
+{
+	"name": "Aggregate transform",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_EMP_Aggregate",
+						"type": "DatasetReference"
+					},
+					"name": "Employees"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_Outputfiles",
+						"type": "DatasetReference"
+					},
+					"name": "TotalEmployeebydep"
+				}
+			],
+			"transformations": [
+				{
+					"name": "AggregateonDep"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          EmpID as string,",
+				"          Name as string,",
+				"          Country as string,",
+				"          Dep as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> Employees",
+				"Employees aggregate(groupBy(Dep),",
+				"     {Total Employees} = count(EmpID)) ~> AggregateonDep",
+				"AggregateonDep sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['TotalEmpbydep.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     mapColumn(",
+				"          DepID = Dep,",
+				"          {Total Emp} = {Total Employees}",
+				"     ),",
+				"     partitionBy('hash', 1)) ~> TotalEmployeebydep"
+			]
+		}
+	}
+}
